@@ -89,15 +89,7 @@ export class Skinner {
     }
 
     public addComponent(name: string, comp: any) {
-        let slot = name;
-        if (comp.replaces !== undefined) {
-            if (comp.replaces.indexOf('.') > -1) {
-                slot = comp.replaces;
-            } else {
-                slot = name.substr(0, name.lastIndexOf('.') + 1) + comp.replaces.split('.').pop();
-            }
-        }
-        this.components[slot] = comp;
+        this.components[name] = comp;
     }
 
     public reset(): void {
