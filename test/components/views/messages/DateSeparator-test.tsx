@@ -17,15 +17,14 @@ limitations under the License.
 import React from "react";
 import { mount } from "enzyme";
 
-import sdk from "../../../skinned-sdk";
 import * as TestUtils from "../../../test-utils";
 import { formatFullDateNoTime } from "../../../../src/DateUtils";
 import SettingsStore from "../../../../src/settings/SettingsStore";
 import { UIFeature } from "../../../../src/settings/UIFeature";
+import _DateSeparator from "../../../../src/components/views/messages/DateSeparator";
 
 jest.mock("../../../../src/settings/SettingsStore");
 
-const _DateSeparator = sdk.getComponent("views.messages.DateSeparator");
 const DateSeparator = TestUtils.wrapInMatrixClientContext(_DateSeparator);
 
 describe("DateSeparator", () => {

@@ -21,12 +21,11 @@ import MockHttpBackend from "matrix-mock-request";
 import * as Matrix from "matrix-js-sdk/src/matrix";
 
 import { MatrixClientPeg } from "../../../../src/MatrixClientPeg";
-import sdk from "../../../skinned-sdk";
 import * as TestUtils from "../../../test-utils";
+import GroupMemberList from "../../../../src/components/views/groups/GroupMemberList";
 
 const { waitForUpdate } = TestUtils;
 
-const GroupMemberList = sdk.getComponent("views.groups.GroupMemberList");
 const WrappedGroupMemberList = TestUtils.wrapInMatrixClientContext(GroupMemberList);
 
 describe("GroupMemberList", function() {

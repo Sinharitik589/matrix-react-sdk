@@ -20,15 +20,14 @@ import { Room } from "matrix-js-sdk/src/models/room";
 import { RoomMember } from "matrix-js-sdk/src/models/room-member";
 
 import * as TestUtils from "../../../test-utils";
-import sdk from "../../../skinned-sdk";
 import MatrixClientContext from "../../../../src/contexts/MatrixClientContext";
 import { Layout } from "../../../../src/settings/enums/Layout";
 import RoomContext, { TimelineRenderingType } from "../../../../src/contexts/RoomContext";
 import { createTestClient } from "../../../test-utils";
 import { IRoomState } from "../../../../src/components/structures/RoomView";
 import { MatrixClientPeg } from "../../../../src/MatrixClientPeg";
+import _MessageComposerButtons from "../../../../src/components/views/rooms/MessageComposerButtons";
 
-const _MessageComposerButtons = sdk.getComponent("views.rooms.MessageComposerButtons");
 const MessageComposerButtons = TestUtils.wrapInMatrixClientContext(
     _MessageComposerButtons,
 );

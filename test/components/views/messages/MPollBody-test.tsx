@@ -32,7 +32,6 @@ import {
 } from "matrix-events-sdk";
 
 import * as TestUtils from "../../../test-utils";
-import sdk from "../../../skinned-sdk";
 import {
     UserVote,
     allVotes,
@@ -42,10 +41,10 @@ import {
 } from "../../../../src/components/views/messages/MPollBody";
 import { MatrixClientPeg } from "../../../../src/MatrixClientPeg";
 import { IBodyProps } from "../../../../src/components/views/messages/IBodyProps";
+import _MPollBody from "../../../../src/components/views/messages/MPollBody";
 
 const CHECKED = "mx_MPollBody_option_checked";
 
-const _MPollBody = sdk.getComponent("views.messages.MPollBody");
 const MPollBody = TestUtils.wrapInMatrixClientContext(_MPollBody);
 
 MatrixClientPeg.matrixClient = {

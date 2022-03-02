@@ -24,14 +24,11 @@ import {
 import { TEXT_NODE_TYPE } from "matrix-js-sdk/src/@types/extensible_events";
 import { MatrixEvent } from "matrix-js-sdk/src/models/event";
 
-import sdk from "../../../skinned-sdk";
 import {
     createMapSiteLink,
     isSelfLocation,
     parseGeoUri,
 } from "../../../../src/components/views/messages/MLocationBody";
-
-sdk.getComponent("views.messages.MLocationBody");
 
 describe("MLocationBody", () => {
     describe("parseGeoUri", () => {
