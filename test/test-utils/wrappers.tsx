@@ -20,20 +20,23 @@ import { MatrixClient } from "matrix-js-sdk/src/matrix";
 import { MatrixClientPeg as peg } from '../../src/MatrixClientPeg';
 import MatrixClientContext from "../../src/contexts/MatrixClientContext";
 
-export function wrapInMatrixClientContext(WrappedComponent) {
-    class Wrapper extends React.Component<{ wrappedRef?: RefCallback }> {
-        _matrixClient: MatrixClient;
-        constructor(props) {
+export function wrapInMatrixClientContext<T extends React.Component>(WrappedComponent: T): T {
+    class Wrapper extends React.Component<{ wrappedRef?: RefCallback<unknown> }> {
+        private readonly matrixClient: MatrixClient;
+
+        public constructor(props) {
             super(props);
 
-            this._matrixClient = peg.get();
+            this.matrixClient = peg.get();
         }
 
-        render() {
-            return <MatrixClientContext.Provider value={this._matrixClient}>
+        public render() {
+            return <MatrixClientContext.Provider value={this.matrixClient}>
                 <WrappedComponent ref={this.props.wrappedRef} {...this.props} />
             </MatrixClientContext.Provider>;
         }
     }
-    return Wrapper;
+
+    // force cast to `T` because we want it to behave like the input component type.
+    return Wrapper as any as T;
 }
