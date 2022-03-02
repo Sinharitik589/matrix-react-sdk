@@ -18,7 +18,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { logger } from "matrix-js-sdk/src/logger";
 
-import * as sdk from '../../../index';
 import dis from '../../../dispatcher/dispatcher';
 import FlairStore from '../../../stores/FlairStore';
 import MatrixClientContext from "../../../contexts/MatrixClientContext";
@@ -26,6 +25,8 @@ import { mediaFromMxc } from "../../../customisations/Media";
 import { _t } from "../../../languageHandler";
 import TagOrderActions from "../../../actions/TagOrderActions";
 import GroupFilterOrderStore from "../../../stores/GroupFilterOrderStore";
+import BaseAvatar from "../avatars/BaseAvatar";
+import AccessibleButton from "../elements/AccessibleButton";
 
 class GroupTile extends React.Component {
     static propTypes = {
@@ -76,8 +77,6 @@ class GroupTile extends React.Component {
     };
 
     render() {
-        const BaseAvatar = sdk.getComponent('avatars.BaseAvatar');
-        const AccessibleButton = sdk.getComponent('elements.AccessibleButton');
         const profile = this.state.profile || {};
         const name = profile.name || this.props.groupId;
         const avatarHeight = this.props.avatarHeight;

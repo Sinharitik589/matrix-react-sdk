@@ -24,7 +24,6 @@ import { sleep } from "matrix-js-sdk/src/utils";
 import { logger } from "matrix-js-sdk/src/logger";
 
 import { MatrixClientPeg } from '../../MatrixClientPeg';
-import * as sdk from '../../index';
 import dis from '../../dispatcher/dispatcher';
 import { getHostingLink } from '../../utils/HostingLink';
 import { sanitizedHtmlNode } from '../../HtmlUtils';
@@ -51,6 +50,17 @@ import CancelSvg from '../../../res/img/cancel.svg';
 import ExternalLinkSvg from '../../../res/img/external-link.svg';
 import AddRoomSvg from '../../../res/img/icons-room-add.svg';
 import CameraSvg from '../../../res/img/camera.svg';
+import ErrorDialog from "../views/dialogs/ErrorDialog";
+import AddressPickerDialog from "../views/dialogs/AddressPickerDialog";
+import RoomAvatar from "../views/avatars/RoomAvatar";
+import BaseAvatar from "../views/avatars/BaseAvatar";
+import InlineSpinner from "../views/elements/InlineSpinner";
+import Spinner from "../views/elements/Spinner";
+import RoomDetailList from "../views/rooms/RoomDetailList";
+import QuestionDialog from "../views/dialogs/QuestionDialog";
+import ShareDialog from "../views/dialogs/ShareDialog";
+import GroupAvatar from "../views/avatars/GroupAvatar";
+import EditableText from "../views/elements/EditableText";
 
 const LONG_DESC_PLACEHOLDER = _td(
     `<h1>HTML for your community's page</h1>
@@ -97,7 +107,6 @@ class CategoryRoomList extends React.Component {
 
     onAddRoomsToSummaryClicked = (ev) => {
         ev.preventDefault();
-        const AddressPickerDialog = sdk.getComponent("dialogs.AddressPickerDialog");
         Modal.createTrackedDialog('Add Rooms to Group Summary', '', AddressPickerDialog, {
             title: _t('Add rooms to the community summary'),
             description: _t("Which rooms would you like to add to this summary?"),
@@ -117,7 +126,6 @@ class CategoryRoomList extends React.Component {
                     if (errorList.length === 0) {
                         return;
                     }
-                    const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
                     Modal.createTrackedDialog(
                         'Failed to add the following room to the group summary',
                         '',
@@ -197,7 +205,6 @@ class FeaturedRoom extends React.Component {
             const roomName = this.props.summaryInfo.name ||
                 this.props.summaryInfo.canonical_alias ||
                 this.props.summaryInfo.room_id;
-            const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
             Modal.createTrackedDialog(
                 'Failed to remove room from group summary',
                 '', ErrorDialog,
@@ -213,8 +220,6 @@ class FeaturedRoom extends React.Component {
     };
 
     render() {
-        const RoomAvatar = sdk.getComponent("avatars.RoomAvatar");
-
         const roomName = this.props.summaryInfo.profile.name ||
             this.props.summaryInfo.profile.canonical_alias ||
             _t("Unnamed Room");
@@ -271,7 +276,6 @@ class RoleUserList extends React.Component {
 
     onAddUsersClicked = (ev) => {
         ev.preventDefault();
-        const AddressPickerDialog = sdk.getComponent("dialogs.AddressPickerDialog");
         Modal.createTrackedDialog('Add Users to Group Summary', '', AddressPickerDialog, {
             title: _t('Add users to the community summary'),
             description: _t("Who would you like to add to this summary?"),
@@ -291,7 +295,6 @@ class RoleUserList extends React.Component {
                     if (errorList.length === 0) {
                         return;
                     }
-                    const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
                     Modal.createTrackedDialog(
                         'Failed to add the following users to the community summary',
                         '', ErrorDialog,
@@ -361,7 +364,6 @@ class FeaturedUser extends React.Component {
         ).catch((err) => {
             logger.error('Error whilst removing user from group summary', err);
             const displayName = this.props.summaryInfo.displayname || this.props.summaryInfo.user_id;
-            const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
             Modal.createTrackedDialog(
                 'Failed to remove user from community summary',
                 '',
@@ -381,7 +383,6 @@ class FeaturedUser extends React.Component {
     };
 
     render() {
-        const BaseAvatar = sdk.getComponent("avatars.BaseAvatar");
         const name = this.props.summaryInfo.displayname || this.props.summaryInfo.user_id;
 
         const permalink = makeUserPermalink(this.props.summaryInfo.user_id);
@@ -577,7 +578,6 @@ export default class GroupView extends React.Component {
     };
 
     _onShareClick = () => {
-        const ShareDialog = sdk.getComponent("dialogs.ShareDialog");
         Modal.createTrackedDialog('share community dialog', '', ShareDialog, {
             target: this._matrixClient.getGroup(this.props.groupId) || new Group(this.props.groupId),
         });
@@ -643,7 +643,6 @@ export default class GroupView extends React.Component {
             });
         }).catch((e) => {
             this.setState({ uploadingAvatar: false });
-            const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
             logger.error("Failed to upload avatar image", e);
             Modal.createTrackedDialog('Failed to upload image', '', ErrorDialog, {
                 title: _t('Error'),
@@ -677,7 +676,6 @@ export default class GroupView extends React.Component {
             this.setState({
                 saving: false,
             });
-            const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
             logger.error("Failed to save community profile", e);
             Modal.createTrackedDialog('Failed to update group', '', ErrorDialog, {
                 title: _t('Error'),
@@ -708,7 +706,6 @@ export default class GroupView extends React.Component {
             // don't reset membershipBusy here: wait for the membership change to come down the sync
         }).catch((e) => {
             this.setState({ membershipBusy: false });
-            const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
             Modal.createTrackedDialog('Error accepting invite', '', ErrorDialog, {
                 title: _t("Error"),
                 description: _t("Unable to accept invite"),
@@ -727,7 +724,6 @@ export default class GroupView extends React.Component {
             // don't reset membershipBusy here: wait for the membership change to come down the sync
         }).catch((e) => {
             this.setState({ membershipBusy: false });
-            const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
             Modal.createTrackedDialog('Error rejecting invite', '', ErrorDialog, {
                 title: _t("Error"),
                 description: _t("Unable to reject invite"),
@@ -751,7 +747,6 @@ export default class GroupView extends React.Component {
             // don't reset membershipBusy here: wait for the membership change to come down the sync
         }).catch((e) => {
             this.setState({ membershipBusy: false });
-            const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
             Modal.createTrackedDialog('Error joining room', '', ErrorDialog, {
                 title: _t("Error"),
                 description: _t("Unable to join community"),
@@ -776,7 +771,6 @@ export default class GroupView extends React.Component {
     }
 
     _onLeaveClick = () => {
-        const QuestionDialog = sdk.getComponent("dialogs.QuestionDialog");
         const warnings = this._leaveGroupWarnings();
 
         Modal.createTrackedDialog('Leave Group', '', QuestionDialog, {
@@ -802,7 +796,6 @@ export default class GroupView extends React.Component {
                     // don't reset membershipBusy here: wait for the membership change to come down the sync
                 }).catch((e) => {
                     this.setState({ membershipBusy: false });
-                    const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
                     Modal.createTrackedDialog('Error leaving community', '', ErrorDialog, {
                         title: _t("Error"),
                         description: _t("Unable to leave community"),
@@ -912,11 +905,6 @@ export default class GroupView extends React.Component {
     }
 
     _getRoomsNode() {
-        const RoomDetailList = sdk.getComponent('rooms.RoomDetailList');
-        const AccessibleButton = sdk.getComponent('elements.AccessibleButton');
-        const Spinner = sdk.getComponent('elements.Spinner');
-        const TooltipButton = sdk.getComponent('elements.TooltipButton');
-
         const roomsHelpNode = this.state.editing ? <TooltipButton helpText={
             _t(
                 'These rooms are displayed to community members on the community page. '+
@@ -1034,9 +1022,6 @@ export default class GroupView extends React.Component {
     }
 
     _getMembershipSection() {
-        const Spinner = sdk.getComponent("elements.Spinner");
-        const BaseAvatar = sdk.getComponent("avatars.BaseAvatar");
-
         const group = this._matrixClient.getGroup(this.props.groupId);
 
         if (group && group.myMembership === 'invite') {
@@ -1150,7 +1135,6 @@ export default class GroupView extends React.Component {
     }
 
     _getJoinableNode() {
-        const InlineSpinner = sdk.getComponent('elements.InlineSpinner');
         return this.state.editing ? <div>
             <h3>
                 { _t('Who can join this community?') }
@@ -1225,9 +1209,6 @@ export default class GroupView extends React.Component {
     }
 
     render() {
-        const GroupAvatar = sdk.getComponent("avatars.GroupAvatar");
-        const Spinner = sdk.getComponent("elements.Spinner");
-
         if (this.state.summaryLoading && this.state.error === null || this.state.saving) {
             return <Spinner />;
         } else if (this.state.summary && !this.state.error) {
@@ -1242,7 +1223,6 @@ export default class GroupView extends React.Component {
                 if (this.state.uploadingAvatar) {
                     avatarImage = <Spinner />;
                 } else {
-                    const GroupAvatar = sdk.getComponent('avatars.GroupAvatar');
                     avatarImage = <GroupAvatar
                         groupId={this.props.groupId}
                         groupName={this.state.profileForm.name}
@@ -1271,8 +1251,6 @@ export default class GroupView extends React.Component {
                         </div>
                     </div>
                 );
-
-                const EditableText = sdk.getComponent("elements.EditableText");
 
                 nameNode = <EditableText
                     className="mx_GroupView_editable"

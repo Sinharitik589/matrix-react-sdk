@@ -21,7 +21,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { logger } from "matrix-js-sdk/src/logger";
 
-import * as sdk from '../../../index';
 import dis from '../../../dispatcher/dispatcher';
 import { isOnlyCtrlOrCmdIgnoreShiftKeyEvent } from '../../../Keyboard';
 import * as FormattingUtils from '../../../utils/FormattingUtils';
@@ -32,6 +31,8 @@ import MatrixClientContext from "../../../contexts/MatrixClientContext";
 import AccessibleButton from "./AccessibleButton";
 import SettingsStore from "../../../settings/SettingsStore";
 import { mediaFromMxc } from "../../../customisations/Media";
+import BaseAvatar from "../avatars/BaseAvatar";
+import AccessibleTooltipButton from "./AccessibleTooltipButton";
 
 // A class for a child of GroupFilterPanel (possibly wrapped in a DNDTagTile) that represents
 // a thing to click on for the user to filter the visible rooms in the RoomList to:
@@ -127,7 +128,6 @@ export default class TagTile extends React.Component {
     };
 
     render() {
-        const BaseAvatar = sdk.getComponent('avatars.BaseAvatar');
         const profile = this.state.profile || {};
         const name = profile.name || this.props.tag;
         const avatarSize = 32;
@@ -162,8 +162,6 @@ export default class TagTile extends React.Component {
             >
                 { "\u00B7\u00B7\u00B7" }
             </AccessibleButton> : <div ref={this.props.contextMenuButtonRef} />;
-
-        const AccessibleTooltipButton = sdk.getComponent("elements.AccessibleTooltipButton");
 
         return <AccessibleTooltipButton
             className={className}

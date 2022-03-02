@@ -19,11 +19,12 @@ limitations under the License.
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as sdk from '../../../index';
 import dis from '../../../dispatcher/dispatcher';
 import { GroupMemberType } from '../../../groups';
 import MatrixClientContext from "../../../contexts/MatrixClientContext";
 import { mediaFromMxc } from "../../../customisations/Media";
+import BaseAvatar from "../avatars/BaseAvatar";
+import EntityTile from "../rooms/EntityTile";
 
 export default class GroupMemberTile extends React.Component {
     static propTypes = {
@@ -42,9 +43,6 @@ export default class GroupMemberTile extends React.Component {
     };
 
     render() {
-        const BaseAvatar = sdk.getComponent('avatars.BaseAvatar');
-        const EntityTile = sdk.getComponent('rooms.EntityTile');
-
         const name = this.props.member.displayname || this.props.member.userId;
         const avatarUrl = this.props.member.avatarUrl
             ? mediaFromMxc(this.props.member.avatarUrl).getSquareThumbnailHttp(36)

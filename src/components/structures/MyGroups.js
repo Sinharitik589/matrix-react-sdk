@@ -18,7 +18,6 @@ limitations under the License.
 
 import React from 'react';
 
-import * as sdk from '../../index';
 import { _t } from '../../languageHandler';
 import SdkConfig from '../../SdkConfig';
 import dis from '../../dispatcher/dispatcher';
@@ -26,6 +25,9 @@ import AccessibleButton from '../views/elements/AccessibleButton';
 import MatrixClientContext from "../../contexts/MatrixClientContext";
 import AutoHideScrollbar from "./AutoHideScrollbar";
 import GroupsSvg from '../../../res/img/icons-groups.svg';
+import Spinner from "../views/elements/Spinner";
+import SimpleRoomHeader from "../views/rooms/SimpleRoomHeader";
+import GroupTile from "../views/groups/GroupTile";
 
 export default class MyGroups extends React.Component {
     static contextType = MatrixClientContext;
@@ -58,9 +60,6 @@ export default class MyGroups extends React.Component {
 
     render() {
         const brand = SdkConfig.get().brand;
-        const Loader = sdk.getComponent("elements.Spinner");
-        const SimpleRoomHeader = sdk.getComponent('rooms.SimpleRoomHeader');
-        const GroupTile = sdk.getComponent("groups.GroupTile");
 
         let content;
         let contentHeader;
@@ -101,7 +100,7 @@ export default class MyGroups extends React.Component {
                 { _t('Error whilst fetching joined communities') }
             </div>;
         } else {
-            content = <Loader />;
+            content = <Spinner />;
         }
 
         return <div className="mx_MyGroups">

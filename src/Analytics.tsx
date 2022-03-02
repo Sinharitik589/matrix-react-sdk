@@ -22,7 +22,7 @@ import { getCurrentLanguage, _t, _td, IVariables } from './languageHandler';
 import PlatformPeg from './PlatformPeg';
 import SdkConfig from './SdkConfig';
 import Modal from './Modal';
-import * as sdk from './index';
+import ErrorDialog from "./components/views/dialogs/ErrorDialog";
 
 const hashRegex = /#\/(groups?|room|user|settings|register|login|forgot_password|home|directory)/;
 const hashVarRegex = /#\/(group|room|user)\/.*$/;
@@ -393,7 +393,6 @@ export class Analytics {
 
         // FIXME: Using an import will result in test failures
         const cookiePolicyUrl = SdkConfig.get().piwik?.policyUrl;
-        const ErrorDialog = sdk.getComponent('dialogs.ErrorDialog');
         const cookiePolicyLink = _t(
             "Our complete cookie policy can be found <CookiePolicyLink>here</CookiePolicyLink>.",
             {},

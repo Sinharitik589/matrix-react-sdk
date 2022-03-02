@@ -17,12 +17,13 @@ limitations under the License.
 import React from 'react';
 
 import Modal from './Modal';
-import * as sdk from './';
 import MultiInviter from './utils/MultiInviter';
 import { _t } from './languageHandler';
 import { MatrixClientPeg } from './MatrixClientPeg';
 import GroupStore from './stores/GroupStore';
 import StyledCheckbox from './components/views/elements/StyledCheckbox';
+import ErrorDialog from "./components/views/dialogs/ErrorDialog";
+import AddressPickerDialog from "./components/views/dialogs/AddressPickerDialog";
 
 export function showGroupInviteDialog(groupId) {
     return new Promise((resolve, reject) => {
@@ -36,7 +37,6 @@ export function showGroupInviteDialog(groupId) {
             </div>
         </div>;
 
-        const AddressPickerDialog = sdk.getComponent("dialogs.AddressPickerDialog");
         Modal.createTrackedDialog('Group Invite', '', AddressPickerDialog, {
             title: _t("Invite new community members"),
             description: description,
@@ -69,7 +69,6 @@ export function showGroupAddRoomDialog(groupId) {
             { _t("Show these rooms to non-members on the community page and room list?") }
         </StyledCheckbox>;
 
-        const AddressPickerDialog = sdk.getComponent("dialogs.AddressPickerDialog");
         Modal.createTrackedDialog('Add Rooms to Group', '', AddressPickerDialog, {
             title: _t("Add rooms to the community"),
             description: description,
@@ -102,14 +101,12 @@ function _onGroupInviteFinished(groupId, addrs) {
         }
 
         if (errorList.length > 0) {
-            const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
             Modal.createTrackedDialog('Failed to invite the following users to the group', '', ErrorDialog, {
                 title: _t("Failed to invite the following users to %(groupId)s:", { groupId: groupId }),
                 description: errorList.join(", "),
             });
         }
     }).catch((err) => {
-        const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
         Modal.createTrackedDialog('Failed to invite users to group', '', ErrorDialog, {
             title: _t("Failed to invite users to community"),
             description: _t("Failed to invite users to %(groupId)s", { groupId: groupId }),
@@ -145,7 +142,6 @@ function _onGroupAddRoomFinished(groupId, addrs, addRoomsPublicly) {
         if (errorList.length === 0) {
             return;
         }
-        const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
         Modal.createTrackedDialog(
             'Failed to add the following room to the group',
             '',

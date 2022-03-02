@@ -17,12 +17,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { _t } from '../../../languageHandler';
-import * as sdk from '../../../index';
 import GroupStore from '../../../stores/GroupStore';
 import { showGroupAddRoomDialog } from '../../../GroupAddressPicker';
 import AccessibleButton from '../elements/AccessibleButton';
 import AutoHideScrollbar from "../../structures/AutoHideScrollbar";
 import EllipsisSvg from '../../../../res/img/ellipsis.svg';
+import BaseAvatar from "../avatars/BaseAvatar";
+import EntityTile from "../rooms/EntityTile";
+import GroupRoomTile from "./GroupRoomTile";
+import TruncatedList from "../elements/TruncatedList";
 
 const INITIAL_LOAD_NUM_ROOMS = 30;
 
@@ -72,8 +75,6 @@ export default class GroupRoomList extends React.Component {
 
     _createOverflowTile = (overflowCount, totalCount) => {
         // For now we'll pretend this is any entity. It should probably be a separate tile.
-        const EntityTile = sdk.getComponent("rooms.EntityTile");
-        const BaseAvatar = sdk.getComponent("avatars.BaseAvatar");
         const text = _t("and %(count)s others...", { count: overflowCount });
         return (
             <EntityTile
@@ -106,7 +107,6 @@ export default class GroupRoomList extends React.Component {
     };
 
     makeGroupRoomTiles(query) {
-        const GroupRoomTile = sdk.getComponent("groups.GroupRoomTile");
         query = (query || "").toLowerCase();
 
         let roomList = this.state.rooms;
@@ -158,7 +158,6 @@ export default class GroupRoomList extends React.Component {
             />
         );
 
-        const TruncatedList = sdk.getComponent("elements.TruncatedList");
         return (
             <div className="mx_GroupRoomList" role="tabpanel">
                 { inviteButton }

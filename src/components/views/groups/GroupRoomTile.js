@@ -22,6 +22,8 @@ import dis from '../../../dispatcher/dispatcher';
 import { GroupRoomType } from '../../../groups';
 import MatrixClientContext from "../../../contexts/MatrixClientContext";
 import { mediaFromMxc } from "../../../customisations/Media";
+import BaseAvatar from "../avatars/BaseAvatar";
+import AccessibleButton from "../elements/AccessibleButton";
 
 class GroupRoomTile extends React.Component {
     static propTypes = {
@@ -40,8 +42,6 @@ class GroupRoomTile extends React.Component {
     };
 
     render() {
-        const BaseAvatar = sdk.getComponent('avatars.BaseAvatar');
-        const AccessibleButton = sdk.getComponent('elements.AccessibleButton');
         const avatarUrl = this.props.groupRoom.avatarUrl
             ? mediaFromMxc(this.props.groupRoom.avatarUrl).getSquareThumbnailHttp(36)
             : null;

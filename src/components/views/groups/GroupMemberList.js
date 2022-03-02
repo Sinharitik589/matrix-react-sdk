@@ -19,7 +19,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { _t } from '../../../languageHandler';
-import * as sdk from '../../../index';
 import GroupStore from '../../../stores/GroupStore';
 import { showGroupInviteDialog } from '../../../GroupAddressPicker';
 import AccessibleButton from '../elements/AccessibleButton';
@@ -27,6 +26,11 @@ import { RightPanelPhases } from '../../../stores/right-panel/RightPanelStorePha
 import AutoHideScrollbar from "../../structures/AutoHideScrollbar";
 import RightPanelStore from '../../../stores/right-panel/RightPanelStore';
 import EllipsisSvg from '../../../../res/img/ellipsis.svg';
+import EntityTile from "../rooms/EntityTile";
+import BaseAvatar from "../avatars/BaseAvatar";
+import GroupMemberTile from "./GroupMemberTile";
+import TruncatedList from "../elements/TruncatedList";
+import Spinner from "../elements/Spinner";
 
 const INITIAL_LOAD_NUM_MEMBERS = 30;
 
@@ -81,8 +85,6 @@ export default class GroupMemberList extends React.Component {
 
     _createOverflowTile = (overflowCount, totalCount) => {
         // For now we'll pretend this is any entity. It should probably be a separate tile.
-        const EntityTile = sdk.getComponent("rooms.EntityTile");
-        const BaseAvatar = sdk.getComponent("avatars.BaseAvatar");
         const text = _t("and %(count)s others...", { count: overflowCount });
         return (
             <EntityTile
@@ -113,8 +115,6 @@ export default class GroupMemberList extends React.Component {
             return <div className="warning">{ _t("Failed to load group members") }</div>;
         }
 
-        const GroupMemberTile = sdk.getComponent("groups.GroupMemberTile");
-        const TruncatedList = sdk.getComponent("elements.TruncatedList");
         query = (query || "").toLowerCase();
         if (query) {
             memberList = memberList.filter((m) => {
@@ -177,7 +177,6 @@ export default class GroupMemberList extends React.Component {
 
     render() {
         if (this.state.fetching || this.state.fetchingInvitedMembers) {
-            const Spinner = sdk.getComponent("elements.Spinner");
             return (<div className="mx_MemberList">
                 <Spinner />
             </div>);

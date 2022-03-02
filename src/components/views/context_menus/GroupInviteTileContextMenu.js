@@ -20,12 +20,14 @@ import PropTypes from 'prop-types';
 import { Group } from 'matrix-js-sdk/src/models/group';
 import { logger } from "matrix-js-sdk/src/logger";
 
-import * as sdk from '../../../index';
 import { _t } from '../../../languageHandler';
 import Modal from '../../../Modal';
 import GroupStore from "../../../stores/GroupStore";
 import { MenuItem } from "../../structures/ContextMenu";
 import ContextDeleteSvg from '../../../../res/img/icon_context_delete.svg';
+import QuestionDialog from "../dialogs/QuestionDialog";
+import Spinner from "../elements/Spinner";
+import ErrorDialog from "../dialogs/ErrorDialog";
 
 export default class GroupInviteTileContextMenu extends React.Component {
     static propTypes = {
@@ -49,7 +51,6 @@ export default class GroupInviteTileContextMenu extends React.Component {
     }
 
     _onClickReject() {
-        const QuestionDialog = sdk.getComponent('dialogs.QuestionDialog');
         Modal.createTrackedDialog('Reject community invite', '', QuestionDialog, {
             title: _t('Reject invitation'),
             description: _t('Are you sure you want to reject the invitation?'),
@@ -57,14 +58,12 @@ export default class GroupInviteTileContextMenu extends React.Component {
                 if (!shouldLeave) return;
 
                 // FIXME: controller shouldn't be loading a view :(
-                const Loader = sdk.getComponent("elements.Spinner");
-                const modal = Modal.createDialog(Loader, null, 'mx_Dialog_spinner');
+                const modal = Modal.createDialog(Spinner, null, 'mx_Dialog_spinner');
 
                 try {
                     await GroupStore.leaveGroup(this.props.group.groupId);
                 } catch (e) {
                     logger.error("Error rejecting community invite: ", e);
-                    const ErrorDialog = sdk.getComponent("dialogs.ErrorDialog");
                     Modal.createTrackedDialog('Error rejecting invite', '', ErrorDialog, {
                         title: _t("Error"),
                         description: _t("Unable to reject invite"),
