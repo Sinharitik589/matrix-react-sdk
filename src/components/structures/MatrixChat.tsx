@@ -42,7 +42,7 @@ import Analytics from "../../Analytics";
 import { DecryptionFailureTracker } from "../../DecryptionFailureTracker";
 import { IMatrixClientCreds, MatrixClientPeg } from "../../MatrixClientPeg";
 import PlatformPeg from "../../PlatformPeg";
-import SdkConfig from "../../SdkConfig";
+import SdkConfig, { ConfigOptions } from "../../SdkConfig";
 import dis from "../../dispatcher/dispatcher";
 import Notifier from '../../Notifier';
 import Modal from "../../Modal";
@@ -152,12 +152,7 @@ interface IScreen {
 }
 
 interface IProps { // TODO type things better
-    config: {
-        piwik: {
-            policyUrl: string;
-        };
-        [key: string]: any;
-    };
+    config: ConfigOptions;
     serverConfig?: ValidatedServerConfig;
     onNewScreen: (screen: string, replaceLast: boolean) => void;
     enableGuest?: boolean;
