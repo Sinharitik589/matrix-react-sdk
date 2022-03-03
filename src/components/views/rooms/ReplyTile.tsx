@@ -27,7 +27,6 @@ import { Action } from '../../../dispatcher/actions';
 import { RoomPermalinkCreator } from '../../../utils/permalinks/Permalinks';
 import SenderProfile from "../messages/SenderProfile";
 import MImageReplyBody from "../messages/MImageReplyBody";
-import * as sdk from '../../../index';
 import { getEventDisplayInfo, isVoiceMessage } from '../../../utils/EventUtils';
 import MFileBody from "../messages/MFileBody";
 import MVoiceMessageBody from "../messages/MVoiceMessageBody";
@@ -120,7 +119,7 @@ export default class ReplyTile extends React.PureComponent<IProps> {
             </div>;
         }
 
-        const EventTileType = sdk.getComponent(tileHandler);
+        const EventTileType = tileHandler;
 
         const classes = classNames("mx_ReplyTile", {
             mx_ReplyTile_info: isInfoMessage && !mxEvent.isRedacted(),

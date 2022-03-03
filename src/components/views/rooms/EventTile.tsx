@@ -32,7 +32,6 @@ import { UserTrustLevel } from 'matrix-js-sdk/src/crypto/CrossSigning';
 import ReplyChain from "../elements/ReplyChain";
 import { _t } from '../../../languageHandler';
 import { hasText } from "../../../TextForEvent";
-import * as sdk from "../../../index";
 import dis from '../../../dispatcher/dispatcher';
 import { Layout } from "../../../settings/enums/Layout";
 import { formatTime } from "../../../DateUtils";
@@ -82,39 +81,47 @@ import { ViewRoomPayload } from "../../../dispatcher/payloads/ViewRoomPayload";
 import { shouldDisplayReply } from '../../../utils/Reply';
 import PosthogTrackers from "../../../PosthogTrackers";
 import TileErrorBoundary from '../messages/TileErrorBoundary';
+import MKeyVerificationRequest from "../messages/MKeyVerificationRequest";
+import MJitsiWidgetEvent from "../messages/MJitsiWidgetEvent";
+import MessageEvent from "../messages/MessageEvent";
+import CallEvent from "../messages/CallEvent";
+import EncryptionEvent from "../messages/EncryptionEvent";
+import TextualEvent from "../messages/TextualEvent";
+import RoomCreate from "../messages/RoomCreate";
+import RoomAvatarEvent from "../messages/RoomAvatarEvent";
 
 export type GetRelationsForEvent = (eventId: string, relationType: string, eventType: string) => Relations;
 
 const eventTileTypes = {
-    [EventType.RoomMessage]: 'messages.MessageEvent',
-    [EventType.Sticker]: 'messages.MessageEvent',
-    [M_POLL_START.name]: 'messages.MessageEvent',
-    [M_POLL_START.altName]: 'messages.MessageEvent',
-    [EventType.KeyVerificationCancel]: 'messages.MKeyVerificationConclusion',
-    [EventType.KeyVerificationDone]: 'messages.MKeyVerificationConclusion',
-    [EventType.CallInvite]: 'messages.CallEvent',
+    [EventType.RoomMessage]: MessageEvent,
+    [EventType.Sticker]: MessageEvent,
+    [M_POLL_START.name]: MessageEvent,
+    [M_POLL_START.altName]: MessageEvent,
+    [EventType.KeyVerificationCancel]: MKeyVerificationConclusion,
+    [EventType.KeyVerificationDone]: MKeyVerificationConclusion,
+    [EventType.CallInvite]: CallEvent,
 };
 
 const stateEventTileTypes = {
-    [EventType.RoomEncryption]: 'messages.EncryptionEvent',
-    [EventType.RoomCanonicalAlias]: 'messages.TextualEvent',
-    [EventType.RoomCreate]: 'messages.RoomCreate',
-    [EventType.RoomMember]: 'messages.TextualEvent',
-    [EventType.RoomName]: 'messages.TextualEvent',
-    [EventType.RoomAvatar]: 'messages.RoomAvatarEvent',
-    [EventType.RoomThirdPartyInvite]: 'messages.TextualEvent',
-    [EventType.RoomHistoryVisibility]: 'messages.TextualEvent',
-    [EventType.RoomTopic]: 'messages.TextualEvent',
-    [EventType.RoomPowerLevels]: 'messages.TextualEvent',
-    [EventType.RoomPinnedEvents]: 'messages.TextualEvent',
-    [EventType.RoomServerAcl]: 'messages.TextualEvent',
+    [EventType.RoomEncryption]: EncryptionEvent,
+    [EventType.RoomCanonicalAlias]: TextualEvent,
+    [EventType.RoomCreate]: RoomCreate,
+    [EventType.RoomMember]: TextualEvent,
+    [EventType.RoomName]: TextualEvent,
+    [EventType.RoomAvatar]: RoomAvatarEvent,
+    [EventType.RoomThirdPartyInvite]: TextualEvent,
+    [EventType.RoomHistoryVisibility]: TextualEvent,
+    [EventType.RoomTopic]: TextualEvent,
+    [EventType.RoomPowerLevels]: TextualEvent,
+    [EventType.RoomPinnedEvents]: TextualEvent,
+    [EventType.RoomServerAcl]: TextualEvent,
     // TODO: Enable support for m.widget event type (https://github.com/vector-im/element-web/issues/13111)
-    'im.vector.modular.widgets': 'messages.TextualEvent',
-    [WIDGET_LAYOUT_EVENT_TYPE]: 'messages.TextualEvent',
-    [EventType.RoomTombstone]: 'messages.TextualEvent',
-    [EventType.RoomJoinRules]: 'messages.TextualEvent',
-    [EventType.RoomGuestAccess]: 'messages.TextualEvent',
-    'm.room.related_groups': 'messages.TextualEvent', // legacy communities flair
+    'im.vector.modular.widgets': TextualEvent,
+    [WIDGET_LAYOUT_EVENT_TYPE]: TextualEvent,
+    [EventType.RoomTombstone]: TextualEvent,
+    [EventType.RoomJoinRules]: TextualEvent,
+    [EventType.RoomGuestAccess]: TextualEvent,
+    'm.room.related_groups': TextualEvent, // legacy communities flair
 };
 
 const stateEventSingular = new Set([
@@ -137,10 +144,10 @@ const stateEventSingular = new Set([
 
 // Add all the Mjolnir stuff to the renderer
 for (const evType of ALL_RULE_TYPES) {
-    stateEventTileTypes[evType] = 'messages.TextualEvent';
+    stateEventTileTypes[evType] = TextualEvent;
 }
 
-export function getHandlerTile(ev: MatrixEvent): string {
+export function getHandlerTile(ev: MatrixEvent): typeof React.Component {
     const type = ev.getType();
 
     // don't show verification requests we're not involved in,
@@ -152,7 +159,7 @@ export function getHandlerTile(ev: MatrixEvent): string {
             if (ev.getSender() !== me && content.to !== me) {
                 return undefined;
             } else {
-                return "messages.MKeyVerificationRequest";
+                return MKeyVerificationRequest;
             }
         }
     }
@@ -184,7 +191,7 @@ export function getHandlerTile(ev: MatrixEvent): string {
         }
 
         if (WidgetType.JITSI.matches(type)) {
-            return "messages.MJitsiWidgetEvent";
+            return MJitsiWidgetEvent;
         }
     }
 
@@ -194,7 +201,7 @@ export function getHandlerTile(ev: MatrixEvent): string {
     }
 
     if (ev.isRedacted()) {
-        return "messages.MessageEvent";
+        return MessageEvent;
     }
 
     return eventTileTypes[type];
@@ -1152,7 +1159,7 @@ export default class EventTile extends React.Component<IProps, IState> {
             </div>;
         }
 
-        const EventTileType = sdk.getComponent(tileHandler);
+        const EventTileType = tileHandler;
         const isProbablyMedia = MediaEventHelper.isEligible(this.props.mxEvent);
 
         const lineClasses = classNames("mx_EventTile_line", {
@@ -1675,7 +1682,7 @@ export function haveTileForEvent(e: MatrixEvent, showHiddenEvents?: boolean): bo
 
     const handler = getHandlerTile(e);
     if (handler === undefined) return false;
-    if (handler === 'messages.TextualEvent') {
+    if (handler === TextualEvent) {
         return hasText(e, showHiddenEvents);
     } else if (handler === 'messages.RoomCreate') {
         return Boolean(e.getContent()['predecessor']);
