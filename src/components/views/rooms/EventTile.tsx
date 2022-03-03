@@ -1238,7 +1238,7 @@ export default class EventTile extends React.Component<IProps, IState> {
         ) {
             avatarSize = 24;
             needsSenderProfile = true;
-        } else if (tileHandler === 'messages.RoomCreate' || isBubbleMessage) {
+        } else if (tileHandler === RoomCreate || isBubbleMessage) {
             avatarSize = 0;
             needsSenderProfile = false;
         } else if (isInfoMessage) {
@@ -1684,7 +1684,7 @@ export function haveTileForEvent(e: MatrixEvent, showHiddenEvents?: boolean): bo
     if (handler === undefined) return false;
     if (handler === TextualEvent) {
         return hasText(e, showHiddenEvents);
-    } else if (handler === 'messages.RoomCreate') {
+    } else if (handler === RoomCreate) {
         return Boolean(e.getContent()['predecessor']);
     } else {
         return true;

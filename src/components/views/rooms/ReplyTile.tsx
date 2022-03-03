@@ -136,7 +136,7 @@ export default class ReplyTile extends React.PureComponent<IProps> {
         const needsSenderProfile = (
             !isInfoMessage &&
             msgType !== MsgType.Image &&
-            tileHandler !== EventType.RoomCreate &&
+            //tileHandler !== EventType.RoomCreate && // TODO: @@ TravisR: Fix? Always true.
             evType !== EventType.Sticker
         );
 

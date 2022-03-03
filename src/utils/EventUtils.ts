@@ -30,6 +30,7 @@ import defaultDispatcher from "../dispatcher/dispatcher";
 import { TimelineRenderingType } from "../contexts/RoomContext";
 import { launchPollEditor } from "../components/views/messages/MPollBody";
 import { Action } from "../dispatcher/actions";
+import MJitsiWidgetEvent from "../components/views/messages/MJitsiWidgetEvent";
 
 /**
  * Returns whether an event should allow actions like reply, reactions, edit, etc.
@@ -234,7 +235,7 @@ export function getEventDisplayInfo(mxEvent: MatrixEvent, hideEvent?: boolean): 
         (eventType === EventType.RoomMessage && msgtype?.startsWith("m.key.verification")) ||
         (eventType === EventType.RoomCreate) ||
         (eventType === EventType.RoomEncryption) ||
-        (tileHandler === "messages.MJitsiWidgetEvent")
+        (tileHandler === MJitsiWidgetEvent)
     );
     const isLeftAlignedBubbleMessage = (
         !isBubbleMessage &&
